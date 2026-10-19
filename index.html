@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Riviera Irish Burgos - Computer Engineering Student
+Portfolio">
+<title>Riviera Irish Burgos | Computer Engineer</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css?family=Fira+Code:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ==========================
+COLOR PALETTE & HARDWARE VARIABLES
+========================== */
+:root {
+--bg-deep: #02050a;
+--bg-card: rgba(8, 14, 26, 0.85);
+--bg-card-hover: rgba(14, 24, 45, 0.92);
+--border-glow: rgba(0, 242, 254, 0.28);
+--circuit-cyan: #00f2fe;
+--circuit-green: #00ff9d;
+--circuit-blue: #0077ff;
+--circuit-purple: #9d4edd;
+--text-main: #f8fafc;
+--text-muted: #8a99ad;
+--font-heading: 'Plus Jakarta Sans', sans-serif;
+--font-code: 'Fira Code', monospace;
+--transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+background-color: var(--bg-deep);
+color: var(--text-main);
+font-family: var(--font-heading);
+line-height: 1.6;
+overflow-x: hidden;
+position: relative;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+/* ==========================
+WELCOME / INTRO OVERLAY SCREEN
+========================== */
+#intro-screen {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background-color: var(--bg-deep);
+z-index: 9999;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+padding: 2rem;
+transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+#intro-screen.fade-out {
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+}
+
+.intro-photo-ring {
+position: relative;
+width: 175px;
+height: 175px;
+border-radius: 50%;
+padding: 7px;
+background: linear-gradient(135deg, var(--circuit-cyan), var(--circuit-green), var(--circuit-purple));
+box-shadow: 0 0 40px rgba(0, 242, 254, 0.6);
+margin-bottom: 1.5rem;
+cursor: pointer;
+transition: var(--transition);
+animation: pulseChip 3s ease-in-out infinite;
+}
+
+.intro-photo-ring:hover {
+transform: scale(1.08);
+box-shadow: 0 0 60px rgba(0, 255, 157, 0.8);
+}
+
+@keyframes pulseChip {
+0%, 100% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.5); }
+50% { box-shadow: 0 0 50px rgba(0, 255, 157, 0.8); }
+}
+
+.intro-photo {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 50%;
+}
+
+.intro-placeholder {
+width: 100%;
+height: 100%;
+background: #080e1a;
+border-radius: 50%;
+display: none;
+justify-content: center;
+align-items: center;
+font-size: 2.8rem;
+color: var(--circuit-cyan);
+}
+
+.intro-title {
+font-size: 2.3rem;
+font-weight: 800;
+margin-bottom: 0.3rem;
+}
+
+.intro-subtitle {
+font-family: var(--font-code);
+color: var(--circuit-green);
+font-size: 1rem;
+letter-spacing: 2px;
+margin-bottom: 2rem;
+text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+}
+
+.enter-btn {
+background: linear-gradient(135deg, var(--circuit-cyan), var(--circuit-blue));
+color: #03060d;
+border: none;
+padding: 0.95rem 2.6rem;
+border-radius: 30px;
+font-family: var(--font-heading);
+font-size: 1rem;
+font-weight: 800;
+cursor: pointer;
+transition: var(--transition);
+box-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
+display: inline-flex;
+align-items: center;
+gap: 0.8rem;
+}
+
+.enter-btn:hover {
+transform: translateY(-4px);
+box-shadow: 0 0 45px rgba(0, 242, 254, 0.9);
+background: linear-gradient(135deg, var(--circuit-green), var(--circuit-cyan));
+}
+
+/* ==========================
+HARDWARE PCB CANVAS & SPOTLIGHT
+========================== */
+.mouse-spotlight {
+position: fixed;
+width: 600px;
+height: 600px;
+background: radial-gradient(circle, rgba(0, 242, 254, 0.12) 0%, rgba(0, 255, 157, 0.05) 40%, transparent 70%);
+top: 0;
+left: 0;
+pointer-events: none;
+transform: translate(-50%, -50%);
+z-index: 1;
+transition: transform 0.05s ease-out;
+}
+
+#pcb-canvas {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+z-index: -1;
+pointer-events: none;
+background: radial-gradient(circle at 50% 50%, #050d1a 0%, #02050a 100%);
+}
+
+/* PCB Hardware Glassmorphism Card */
+.glass-card {
+background: var(--bg-card);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border: 1px solid var(--border-glow);
+border-radius: 20px;
+box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+transition: var(--transition);
+position: relative;
+overflow: hidden;
+}
+
+.glass-card::after {
+content: '';
+position: absolute;
+top: 0;
+right: 0;
+width: 40px;
+height: 40px;
+border-top: 2px solid var(--circuit-cyan);
+border-right: 2px solid var(--circuit-cyan);
+border-top-right-radius: 20px;
+opacity: 0.4;
+transition: var(--transition);
+}
+
+.glass-card:hover {
+background: var(--bg-card-hover);
+border-color: var(--circuit-cyan);
+box-shadow: 0 20px 45px rgba(0, 242, 254, 0.3);
+transform: translateY(-6px);
+}
+
+.glass-card:hover::after {
+opacity: 1;
+border-color: var(--circuit-green);
+}
+
+/* ==========================
+TYPOGRAPHY & ACCENTS
+========================== */
+.eyebrow {
+font-family: var(--font-code);
+color: var(--circuit-green);
+font-size: 0.85rem;
+letter-spacing: 2px;
+margin-bottom: 0.5rem;
+text-transform: uppercase;
+}
+
+.gradient-text {
+background: linear-gradient(135deg, var(--circuit-cyan), var(--circuit-green), var(--circuit-purple));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
+}
+
+/* ==========================
+HEADER & NAVIGATION
+========================== */
+.header {
+position: fixed;
+top: 0;
+width: 100%;
+padding: 1.2rem 8%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: rgba(2, 5, 10, 0.88);
+backdrop-filter: blur(15px);
+z-index: 1000;
+border-bottom: 1px solid rgba(0, 242, 254, 0.15);
+}
+
+.logo {
+font-size: 1.8rem;
+font-weight: 800;
+color: #fff;
+text-decoration: none;
+letter-spacing: 1px;
+font-family: var(--font-code);
+cursor: pointer;
+}
+
+.logo .dot {
+color: var(--circuit-green);
+text-shadow: 0 0 12px var(--circuit-green);
+}
+
+.navbar {
+display: flex;
+gap: 2.2rem;
+}
+
+.nav-link {
+color: var(--text-muted);
+text-decoration: none;
+font-weight: 600;
+font-size: 0.95rem;
+transition: var(--transition);
+position: relative;
+cursor: pointer;
+}
+
+.nav-link:hover, .nav-link.active {
+color: var(--circuit-cyan);
+text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+}
+
+.nav-link::after {
+content: '';
+position: absolute;
+bottom: -6px;
+left: 0;
+width: 0%;
+height: 2px;
+background: var(--circuit-cyan);
+box-shadow: 0 0 10px var(--circuit-cyan);
+transition: var(--transition);
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+width: 100%;
+}
+
+.menu-toggle {
+display: none;
+background: none;
+border: none;
+color: var(--text-main);
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+/* ==========================
+TAB SECTIONS SYSTEM
+========================== */
+main {
+padding-top: 110px;
+padding-bottom: 3rem;
+position: relative;
+z-index: 2;
+flex: 1;
+}
+
+.tab-content {
+display: none;
+opacity: 0;
+transform: translateY(15px);
+transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.tab-content.active {
+display: block;
+opacity: 1;
+transform: translateY(0);
+}
+
+.section {
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem 8%;
+}
+
+.section-heading {
+text-align: center;
+margin-bottom: 3rem;
+}
+
+.section-heading h2 {
+font-size: 2.8rem;
+font-weight: 800;
+}
+
+.section-description {
+color: var(--text-muted);
+margin-top: 0.5rem;
+font-size: 1.05rem;
+}
+
+/* ==========================
+HERO SECTION
+========================== */
+.hero {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 4rem;
+min-height: calc(80vh - 110px);
+}
+
+.hero-content {
+flex: 1;
+}
+
+.hero-content h1 {
+font-size: 3.5rem;
+line-height: 1.15;
+margin: 0.5rem 0;
+}
+
+.hero-content h2 {
+font-size: 2.2rem;
+margin-bottom: 1.2rem;
+}
+
+.hero-description {
+color: var(--text-muted);
+font-size: 1.15rem;
+margin-bottom: 2.2rem;
+max-width: 580px;
+}
+
+.hero-buttons {
+display: flex;
+gap: 1.2rem;
+margin-bottom: 2.5rem;
+}
+
+.btn {
+padding: 0.9rem 2rem;
+border-radius: 12px;
+font-weight: 700;
+text-decoration: none;
+transition: var(--transition);
+display: inline-flex;
+align-items: center;
+gap: 0.6rem;
+cursor: pointer;
+border: none;
+}
+
+.btn-primary {
+background: linear-gradient(135deg, var(--circuit-cyan), var(--circuit-blue));
+color: #03060d;
+box-shadow: 0 4px 25px rgba(0, 242, 254, 0.4);
+}
+
+.btn-primary:hover {
+transform: translateY(-4px);
+box-shadow: 0 8px 30px rgba(0, 242, 254, 0.7);
+}
+
+.btn-outline {
+border: 1px solid var(--circuit-cyan);
+color: var(--circuit-cyan);
+background: rgba(0, 242, 254, 0.04);
+}
+
+.btn-outline:hover {
+background: rgba(0, 242, 254, 0.15);
+transform: translateY(-4px);
+box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+}
+
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 0.8rem;
+padding: 0.5rem 1.2rem;
+background: rgba(0, 255, 157, 0.08);
+border: 1px solid rgba(0, 255, 157, 0.25);
+border-radius: 30px;
+font-size: 0.9rem;
+color: var(--circuit-green);
+}
+
+.status-dot {
+width: 8px;
+height: 8px;
+background-color: var(--circuit-green);
+border-radius: 50%;
+box-shadow: 0 0 10px var(--circuit-green);
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.8); }
+70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 157, 0); }
+100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 157, 0); }
+}
+
+.hero-visual {
+position: relative;
+flex: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-15px); }
+}
+
+.photo-frame {
+position: relative;
+width: 330px;
+height: 390px;
+border-radius: 24px;
+padding: 12px;
+background: linear-gradient(135deg, rgba(0, 242, 254, 0.5), rgba(0, 255, 157, 0.5));
+box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+}
+
+.profile-photo {
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: 16px;
+}
+
+.photo-placeholder {
+width: 100%;
+height: 100%;
+background: #080e1a;
+border-radius: 16px;
+display: none;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+color: var(--text-muted);
+}
+
+.photo-placeholder i {
+font-size: 3.5rem;
+color: var(--circuit-cyan);
+}
+
+.photo-tag {
+position: absolute;
+bottom: 15px;
+right: -15px;
+background: var(--bg-deep);
+border: 1px solid var(--circuit-green);
+padding: 0.5rem 1.2rem;
+border-radius: 30px;
+font-family: var(--font-code);
+font-size: 0.85rem;
+color: var(--circuit-green);
+box-shadow: 0 0 20px rgba(0, 255, 157, 0.4);
+}
+
+/* ==========================
+ABOUT SECTION
+========================== */
+.about-card {
+padding: 3rem;
+max-width: 900px;
+margin: 0 auto;
+}
+
+.about-marker {
+font-family: var(--font-code);
+color: var(--circuit-cyan);
+margin-bottom: 1rem;
+font-size: 1rem;
+}
+
+.about-card p {
+margin-bottom: 1.2rem;
+color: var(--text-muted);
+font-size: 1.1rem;
+}
+
+/* ==========================
+SKILLS GRID
+========================== */
+.skills-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 2rem;
+}
+
+.skill-card {
+padding: 2.2rem;
+}
+
+.skill-icon {
+font-size: 2.8rem;
+color: var(--circuit-cyan);
+margin-bottom: 1.2rem;
+filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.5));
+}
+
+.skill-card h3 {
+margin-bottom: 0.6rem;
+font-size: 1.35rem;
+}
+
+.skill-card p {
+color: var(--text-muted);
+font-size: 0.95rem;
+}
+
+/* ==========================
+PROJECTS GRID
+========================== */
+.projects-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+gap: 2.2rem;
+}
+
+.project-card {
+padding: 2.5rem;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.project-number {
+font-family: var(--font-code);
+font-size: 0.85rem;
+color: var(--circuit-green);
+margin-bottom: 0.6rem;
+display: block;
+}
+
+.project-card h3 {
+margin-bottom: 0.8rem;
+font-size: 1.5rem;
+}
+
+.project-card p {
+color: var(--text-muted);
+font-size: 0.98rem;
+margin-bottom: 1.8rem;
+}
+
+.tags {
+display: flex;
+gap: 0.6rem;
+flex-wrap: wrap;
+margin-bottom: 1.8rem;
+}
+
+.tags span {
+background: rgba(0, 242, 254, 0.08);
+border: 1px solid rgba(0, 242, 254, 0.25);
+color: var(--circuit-cyan);
+padding: 0.35rem 0.8rem;
+border-radius: 8px;
+font-size: 0.78rem;
+font-family: var(--font-code);
+}
+
+.project-link {
+color: #fff;
+text-decoration: none;
+font-weight: 600;
+font-size: 0.95rem;
+display: inline-flex;
+align-items: center;
+gap: 0.6rem;
+transition: var(--transition);
+}
+
+.project-link:hover {
+color: var(--circuit-cyan);
+text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+}
+
+/* ==========================
+EDUCATION & CONTACT
+========================== */
+.education-card {
+padding: 3rem;
+display: flex;
+gap: 2.5rem;
+align-items: center;
+max-width: 900px;
+margin: 0 auto;
+}
+
+.education-icon {
+font-size: 3.5rem;
+color: var(--circuit-cyan);
+filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.6));
+}
+
+.education-details h3 {
+font-size: 1.5rem;
+margin: 0.3rem 0;
+}
+
+.degree-status {
+color: var(--circuit-green);
+font-weight: 600;
+margin-bottom: 0.6rem;
+}
+
+.muted {
+color: var(--text-muted);
+font-size: 0.95rem;
+}
+
+/* CONTACT CARD */
+.contact-card {
+padding: 3.5rem;
+text-align: center;
+max-width: 900px;
+margin: 0 auto;
+}
+
+.contact-message {
+font-size: 1.15rem;
+color: var(--text-muted);
+margin-bottom: 2.2rem;
+}
+
+.contact-links {
+display: flex;
+flex-direction: column;
+gap: 1.2rem;
+}
+
+.contact-link {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1.2rem 2rem;
+background: rgba(255, 255, 255, 0.02);
+border: 1px solid rgba(255, 255, 255, 0.06);
+border-radius: 14px;
+color: #fff;
+text-decoration: none;
+transition: var(--transition);
+}
+
+.contact-link:hover {
+background: rgba(0, 242, 254, 0.1);
+border-color: var(--circuit-cyan);
+color: var(--circuit-cyan);
+box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
+transform: translateX(8px);
+}
+
+/* ==========================
+FOOTER
+========================== */
+.footer {
+text-align: center;
+padding: 2.5rem 8%;
+border-top: 1px solid rgba(0, 242, 254, 0.12);
+color: var(--text-muted);
+font-size: 0.95rem;
+position: relative;
+z-index: 2;
+}
+
+.footer .logo {
+display: inline-block;
+margin-bottom: 0.6rem;
+}
+
+/* ==========================
+RESPONSIVE STYLES
+========================== */
+@media (max-width: 968px) {
+.hero {
+flex-direction: column;
+text-align: center;
+}
+.hero-buttons {
+justify-content: center;
+}
+.navbar {
+position: fixed;
+top: 75px;
+right: -100%;
+background: var(--bg-deep);
+flex-direction: column;
+width: 100%;
+text-align: center;
+padding: 2.5rem 0;
+transition: var(--transition);
+border-bottom: 1px solid var(--border-glow);
+}
+.navbar.active {
+right: 0;
+}
+.menu-toggle {
+display: block;
+}
+.education-card {
+flex-direction: column;
+text-align: center;
+}
+}
+</style>
+</head>
+<body>
+
+<!-- CLICK TO ENTER WELCOME SCREEN -->
+<div id="intro-screen">
+<div class="intro-photo-ring" onclick="dismissIntro()">
+<img src="https://uploads.onecompiler.io/4568a7gjv/4568eumab/Unknown.jpg"
+alt="Riviera Irish Burgos" class="intro-photo" onerror="this.style.display='none';
+this.nextElementSibling.style.display='flex';">
+<div class="intro-placeholder">
+<i class="fa-solid fa-microchip"></i>
+</div>
+</div>
+<h1 class="intro-title">Riviera Irish Burgos</h1>
+<p class="intro-subtitle">&lt; COMPUTER ENGINEER /&gt;</p>
+<button class="enter-btn" onclick="dismissIntro()">
+Enter Portfolio <i class="fa-solid fa-microchip"></i>
+</button>
+</div>
+
+<!-- Mouse Spotlight Glowing Orb -->
+<div class="mouse-spotlight" id="mouse-spotlight"></div>
+
+<!-- DYNAMIC COMPUTER ENGINEERING PCB & MATRIX CANVAS BACKGROUND -->
+<canvas id="pcb-canvas"></canvas>
+
+<header class="header">
+<div class="logo" onclick="switchTab('home')">Irish B<span class="dot">.</span></div>
+<button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-
+expanded="false" aria-controls="nav-menu">
+<i class="fa-solid fa-bars"></i>
+</button>
+<nav class="navbar" id="nav-menu">
+<a class="nav-link active" onclick="switchTab('home')">Home</a>
+<a class="nav-link" onclick="switchTab('about')">About</a>
+<a class="nav-link" onclick="switchTab('skills')">Skills</a>
+<a class="nav-link" onclick="switchTab('projects')">Projects</a>
+<a class="nav-link" onclick="switchTab('education')">Education</a>
+<a class="nav-link" onclick="switchTab('contact')">Contact</a>
+</nav>
+</header>
+
+<main>
+<!-- HOME TAB -->
+<div id="home" class="tab-content active">
+<section class="hero section">
+<div class="hero-content">
+<p class="eyebrow"><i class="fa-solid fa-microchip"></i> WELCOME TO MY
+PORTFOLIO</p>
+<h1>Hi, I'm <span class="gradient-text">Riviera Irish Burgos</span></h1>
+<h2>Future <span class="gradient-text">Computer Engineer</span></h2>
+<p class="hero-description">
+I am a 4th-year Bachelor of Science in Computer Engineering student at ICCT Main
+Campus Cainta. Passionate about software development, embedded systems, and building
+high-impact tech solutions.
+</p>
+<div class="hero-buttons">
+<button onclick="switchTab('projects')" class="btn btn-primary"><i class="fa-solid fa-rocket"></i> Explore Projects</button>
+<button onclick="switchTab('contact')" class="btn btn-outline"><i class="fa-regular fa-paper-plane"></i> Contact Me</button>
+</div>
+<div class="status-badge">
+<span class="status-dot"></span>
+<span>Learning, building, and innovating every day.</span>
+</div>
+</div>
+<div class="hero-visual">
+<div class="photo-frame">
+<img src="https://uploads.onecompiler.io/4568a7gjv/4568eumab/Unknown.jpg"
+alt="Riviera Irish Burgos" class="profile-photo" onerror="this.style.display='none';
+this.nextElementSibling.style.display='flex';">
+<div class="photo-placeholder">
+<i class="fa-solid fa-user-astronaut"></i>
+<span>YOUR PHOTO</span>
+<small>Upload Irish Formal.jpg</small>
+</div>
+</div>
+</div>
+</section>
+</div>
+
+<!-- ABOUT TAB -->
+<div id="about" class="tab-content">
+<section class="section">
+<div class="section-heading">
+<p class="eyebrow">01/ GET TO KNOW ME</p>
+<h2>About <span class="gradient-text">Me</span></h2>
+</div>
+<div class="about-card glass-card">
+<div class="about-marker">&lt; ABOUT /&gt;</div>
+<p>
+Hello! I'm <strong>Riviera Irish Burgos</strong>, a 4th-year Bachelor of Science in
+Computer Engineering student at ICCT Main Campus Cainta. I specialize in bridging the gap
+between hardware architecture and software engineering.
+</p>
+<p>
+I continuously expand my skills in application development, system logic, and
+interactive technologies. My goal is to become a versatile computer engineer capable of
+designing smart, efficient, and user-centric systems.
+</p>
+</div>
+</section>
+</div>
+
+<!-- SKILLS TAB -->
+<div id="skills" class="tab-content">
+<section class="section">
+<div class="section-heading">
+<p class="eyebrow">02/ WHAT I'M LEARNING</p>
+<h2>Technical <span class="gradient-text">Skills</span></h2>
+<p class="section-description">
+Core technologies, languages, and frameworks I build with.
+</p>
+</div>
+<div class="skills-grid">
+<article class="skill-card glass-card">
+<div class="skill-icon"><i class="fa-brands fa-html5"></i></div>
+<h3>HTML5</h3>
+<p>Structuring clean, semantic, and modern web application layouts.</p>
+</article>
+<article class="skill-card glass-card">
+<div class="skill-icon"><i class="fa-brands fa-css3-alt"></i></div>
+<h3>CSS3</h3>
+<p>Styling responsive, animated, and glassmorphism user interfaces.</p>
+</article>
+<article class="skill-card glass-card">
+<div class="skill-icon"><i class="fa-brands fa-js"></i></div>
+<h3>JavaScript</h3>
+<p>Building interactive web components, dynamic applications, and scripts.</p>
+</article>
+<article class="skill-card glass-card">
+<div class="skill-icon"><i class="fa-brands fa-github"></i></div>
+<h3>Git & GitHub</h3>
+<p>Managing version control, code repositories, and collaborative development.</p>
+</article>
+<article class="skill-card glass-card">
+<div class="skill-icon"><i class="fa-solid fa-code"></i></div>
+<h3>Programming Logic</h3>
+<p>Designing efficient algorithms, solving problems, and structuring clean code.</p>
+</article>
+</div>
+</section>
+</div>
+
+<!-- PROJECTS TAB -->
+<div id="projects" class="tab-content">
+<section class="section">
+<div class="section-heading">
+<p class="eyebrow">03/ WHAT I'M BUILDING</p>
+<h2>Featured <span class="gradient-text">Projects</span></h2>
+<p class="section-description">
+Academic and personal software initiatives reflecting my engineering journey.
+</p>
+</div>
+<div class="projects-grid">
+<article class="project-card glass-card">
+<span class="project-number">01_PROJECT</span>
+<h3>Personal Portfolio</h3>
+<p>
+A high-tech digital portfolio showcasing my academic milestones, engineering
+projects, and technical skills.
+</p>
+<div class="tags">
+<span>HTML5</span>
+<span>CSS3</span>
+<span>JavaScript</span>
+</div>
+<a href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
+class="project-link" target="_blank" rel="noopener noreferrer">
+View Repository <i class="fa-solid fa-arrow-up-right-from-square"></i>
+</a>
+</article>
+<article class="project-card glass-card">
+<span class="project-number">02_PROJECT</span>
+<h3>Kilos Grammar</h3>
+<p>
+A gamified educational application for elementary students to master English
+grammar through interactive body movements and motion controls.
+</p>
+<div class="tags">
+<span>Godot Engine</span>
+<span>Game Dev</span>
+<span>Education</span>
+</div>
+<a href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
+class="project-link" target="_blank" rel="noopener noreferrer">
+View Repository <i class="fa-solid fa-arrow-up-right-from-square"></i>
+</a>
+</article>
+<article class="project-card glass-card">
+<span class="project-number">03_PROJECT</span>
+<h3>GAP Disaster Preparedness</h3>
+<p>
+An interactive emergency preparedness quiz application teaching life-saving
+response techniques for typhoons, earthquakes, floods, and fires.
+</p>
+<div class="tags">
+<span>Android</span>
+<span>JavaScript</span>
+<span>Mobile App</span>
+</div>
+<a href="https://github.com/YOUR-USERNAME/YOUR-REPOSITORY"
+class="project-link" target="_blank" rel="noopener noreferrer">
+View Repository <i class="fa-solid fa-arrow-up-right-from-square"></i>
+</a>
+</article>
+</div>
+</section>
+</div>
+
+<!-- EDUCATION TAB -->
+<div id="education" class="tab-content">
+<section class="section">
+<div class="section-heading">
+<p class="eyebrow">04/ MY ACADEMIC JOURNEY</p>
+<h2>My <span class="gradient-text">Education</span></h2>
+</div>
+<div class="education-card glass-card">
+<div class="education-icon">
+<i class="fa-solid fa-graduation-cap"></i>
+</div>
+<div class="education-details">
+<p class="project-number">UNDERGRADUATE DEGREE</p>
+<h3>Bachelor of Science in Computer Engineering</h3>
+<p class="degree-status"><i class="fa-solid fa-user-graduate"></i> 4th-Year College
+Student</p>
+<p class="muted"><i class="fa-solid fa-location-dot"></i> ICCT Colleges Main
+Campus, Cainta</p>
+<p class="muted"><i class="fa-regular fa-calendar-check"></i> Expected Graduation:
+2027</p>
+</div>
+</div>
+</section>
+</div>
+
+<!-- CONTACT TAB -->
+<div id="contact" class="tab-content">
+<section class="section">
+<div class="section-heading">
+<p class="eyebrow">05/ LET'S CONNECT</p>
+<h2>Contact <span class="gradient-text">Me</span></h2>
+<p class="section-description">
+Interested in collaborating, asking questions, or discussing computer engineering?
+Reach out anytime!
+</p>
+</div>
+<div class="contact-card glass-card">
+<p class="contact-message">
+I am actively seeking technology opportunities, creative projects, and engineering
+connections.
+</p>
+<div class="contact-links">
+<a href="mailto:amoriviera061795@gmail.com" class="contact-link">
+<span><i class="fa-solid fa-envelope"></i> Email</span>
+<span>Send a Message <i class="fa-solid fa-arrow-right"></i></span>
+</a>
+<a href="https://github.com/amoriviera061795-sketch" class="contact-link"
+target="_blank" rel="noopener noreferrer">
+<span><i class="fa-brands fa-github"></i> GitHub</span>
+<span>Explore Profile <i class="fa-solid fa-arrow-right"></i></span>
+</a>
+<a href="https://www.facebook.com/rivierairish.burgos" class="contact-link"
+target="_blank" rel="noopener noreferrer">
+<span><i class="fa-brands fa-facebook"></i> Facebook</span>
+<span>Connect <i class="fa-solid fa-arrow-right"></i></span>
+</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+
+<footer class="footer">
+<p>Designed & Engineered by <strong>Riviera Irish Burgos</strong>.</p>
+<p>&copy; <span id="year">2026</span> All rights reserved.</p>
+</footer>
+
+<script>
+// Manual Dismiss Intro on Click
+function dismissIntro() {
+const intro = document.getElementById('intro-screen');
+if (intro) {
+intro.classList.add('fade-out');
+}
+}
+
+// Tab Switching Logic
+function switchTab(tabId) {
+const contents = document.querySelectorAll('.tab-content');
+contents.forEach(content => {
+content.classList.remove('active');
+});
+
+const navLinks = document.querySelectorAll('.nav-link');
+navLinks.forEach(link => {
+link.classList.remove('active');
+});
+
+const targetContent = document.getElementById(tabId);
+if (targetContent) {
+targetContent.classList.add('active');
+}
+
+navLinks.forEach(link => {
+if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(tabId)) {
+link.classList.add('active');
+}
+});
+
+const navMenu = document.getElementById('nav-menu');
+if (navMenu) navMenu.classList.remove('active');
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+// Mouse Spotlight Tracking
+const mouseSpotlight = document.getElementById('mouse-spotlight');
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+window.addEventListener('mousemove', (e) => {
+mouseX = e.clientX;
+mouseY = e.clientY;
+if (mouseSpotlight) {
+mouseSpotlight.style.left = `${mouseX}px`;
+mouseSpotlight.style.top = `${mouseY}px`;
+}
+});
+
+// Mobile Menu Toggle
+const menuToggle = document.getElementById('menu-toggle');
+const navMenu = document.getElementById('nav-menu');
+if (menuToggle && navMenu) {
+menuToggle.addEventListener('click', () => {
+navMenu.classList.toggle('active');
+});
+}
+
+// Set Dynamic Year
+const yearSpan = document.getElementById('year');
+if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+/* ==========================
+HIGH-TECH COMPUTER ENGINEERING ANIMATED BACKGROUND (CANVAS)
+========================== */
+const canvas = document.getElementById('pcb-canvas');
+if (!canvas) return;
+const ctx = canvas.getContext('2d');
+
+let circuitTraces = [];
+let pulses = [];
+const nodes = [];
+const nodeCount = 40;
+const maxDistance = 140;
+const cpeTokens = ['0101', '0xFA', '1010', 'CPU', 'BUS', 'RAM', '0110', '0x00', 'ACK', 'CLK', '1101', 'IO', 'SYS'];
+const dataPackets = [];
+const packetCount = 22;
+
+function resizeCanvas() {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+generateCircuitGrid();
+generateNodesAndPackets();
+}
+
+function generateCircuitGrid() {
+circuitTraces = [];
+pulses = [];
+const cols = Math.floor(canvas.width / 110);
+const rows = Math.floor(canvas.height / 110);
+
+for (let i = 0; i < cols * rows; i++) {
+let startX = Math.random() * canvas.width;
+let startY = Math.random() * canvas.height;
+let path = [{x: startX, y: startY}];
+let currentX = startX;
+let currentY = startY;
+
+for (let step = 0; step < 3; step++) {
+let angleChoice = Math.floor(Math.random() * 4);
+let dist = 40 + Math.random() * 80;
+if (angleChoice === 0) currentX += dist;
+else if (angleChoice === 1) currentY += dist;
+else if (angleChoice === 2) { currentX += dist; currentY += dist; }
+else { currentX += dist; currentY -= dist; }
+path.push({x: currentX, y: currentY});
+}
+circuitTraces.push(path);
+
+if (Math.random() > 0.35) {
+pulses.push({
+traceIndex: circuitTraces.length - 1,
+segment: 0,
+progress: 0,
+speed: 0.008 + Math.random() * 0.012,
+color: Math.random() > 0.4 ? '#00f2fe' : '#00ff9d'
+});
+}
+}
+}
+
+function generateNodesAndPackets() {
+nodes.length = 0;
+dataPackets.length = 0;
+
+for (let i = 0; i < nodeCount; i++) {
+nodes.push({
+x: Math.random() * canvas.width,
+y: Math.random() * canvas.height,
+vx: (Math.random() - 0.5) * 0.7,
+vy: (Math.random() - 0.5) * 0.7,
+radius: Math.random() * 2 + 1.5,
+color: Math.random() > 0.4 ? '#00f2fe' : '#00ff9d'
+});
+}
+
+for (let i = 0; i < packetCount; i++) {
+dataPackets.push({
+x: Math.random() * canvas.width,
+y: Math.random() * canvas.height,
+text: cpeTokens[Math.floor(Math.random() * cpeTokens.length)],
+speedY: Math.random() * 0.6 + 0.2,
+opacity: Math.random() * 0.4 + 0.1,
+size: Math.random() * 10 + 11
+});
+}
+}
+
+function drawCpeBackground() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// 1. Draw Subtle Grid Layout
+const gridSize = 60;
+ctx.strokeStyle = 'rgba(0, 242, 254, 0.025)';
+ctx.lineWidth = 1;
+
+for (let x = 0; x < canvas.width; x += gridSize) {
+ctx.beginPath();
+ctx.moveTo(x, 0);
+ctx.lineTo(x, canvas.height);
+ctx.stroke();
+}
+for (let y = 0; y < canvas.height; y += gridSize) {
+ctx.beginPath();
+ctx.moveTo(0, y);
+ctx.lineTo(canvas.width, y);
+ctx.stroke();
+}
+
+// 2. Draw Floating Data Streams (Binary / Hex Packets)
+dataPackets.forEach(p => {
+p.y -= p.speedY;
+if (p.y < -20) {
+p.y = canvas.height + 20;
+p.x = Math.random() * canvas.width;
+}
+ctx.font = `${p.size}px "Fira Code", monospace`;
+ctx.fillStyle = `rgba(0, 255, 157, ${p.opacity})`;
+ctx.fillText(p.text, p.x, p.y);
+});
+
+// 3. Draw Hardware PCB Circuit Traces & Vias
+circuitTraces.forEach((path) => {
+ctx.beginPath();
+ctx.moveTo(path[0].x, path[0].y);
+for (let i = 1; i < path.length; i++) {
+ctx.lineTo(path[i].x, path[i].y);
+}
+ctx.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+ctx.lineWidth = 1.8;
+ctx.stroke();
+
+path.forEach((pt) => {
+ctx.beginPath();
+ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2);
+ctx.fillStyle = 'rgba(0, 255, 157, 0.2)';
+ctx.fill();
+});
+});
+
+// 4. Animate Pulses Along Circuits
+pulses.forEach((p) => {
+const path = circuitTraces[p.traceIndex];
+if (!path) return;
+p.progress += p.speed;
+if (p.progress >= 1) {
+p.progress = 0;
+p.segment++;
+if (p.segment >= path.length - 1) {
+p.segment = 0;
+}
+}
+
+const p1 = path[p.segment];
+const p2 = path[p.segment + 1];
+if (p1 && p2) {
+const currentX = p1.x + (p2.x - p1.x) * p.progress;
+const currentY = p1.y + (p2.y - p1.y) * p.progress;
+
+ctx.beginPath();
+ctx.arc(currentX, currentY, 3, 0, Math.PI * 2);
+ctx.fillStyle = p.color;
+ctx.shadowBlur = 12;
+ctx.shadowColor = p.color;
+ctx.fill();
+ctx.shadowBlur = 0;
+}
+});
+
+// 5. Draw Interconnected Interactive Nodes
+for (let i = 0; i < nodes.length; i++) {
+let n1 = nodes[i];
+n1.x += n1.vx;
+n1.y += n1.vy;
+
+if (n1.x < 0 || n1.x > canvas.width) n1.vx *= -1;
+if (n1.y < 0 || n1.y > canvas.height) n1.vy *= -1;
+
+ctx.beginPath();
+ctx.arc(n1.x, n1.y, n1.radius, 0, Math.PI * 2);
+ctx.fillStyle = n1.color;
+ctx.shadowColor = n1.color;
+ctx.shadowBlur = 8;
+ctx.fill();
+ctx.shadowBlur = 0;
+
+for (let j = i + 1; j < nodes.length; j++) {
+let n2 = nodes[j];
+let dx = n1.x - n2.x;
+let dy = n1.y - n2.y;
+let dist = Math.sqrt(dx * dx + dy * dy);
+
+if (dist < maxDistance) {
+let alpha = (1 - dist / maxDistance) * 0.22;
+ctx.strokeStyle = `rgba(0, 242, 254, ${alpha})`;
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(n1.x, n1.y);
+let midX = (n1.x + n2.x) / 2;
+ctx.lineTo(midX, n1.y);
+ctx.lineTo(midX, n2.y);
+ctx.lineTo(n2.x, n2.y);
+ctx.stroke();
+}
+}
+
+// Mouse Magnet Connection
+let mDx = n1.x - mouseX;
+let mDy = n1.y - mouseY;
+let mDist = Math.sqrt(mDx * mDx + mDy * mDy);
+if (mDist < 130) {
+ctx.strokeStyle = `rgba(0, 255, 157, ${0.45 * (1 - mDist / 130)})`;
+ctx.beginPath();
+ctx.moveTo(n1.x, n1.y);
+ctx.lineTo(mouseX, mouseY);
+ctx.stroke();
+}
+}
+
+requestAnimationFrame(drawCpeBackground);
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+drawCpeBackground();
+});
+</script>
+</body>
+</html>
