@@ -2,7 +2,6 @@
   <img src="https://uploads.onecompiler.io/45689wpf9/456mdxvbt/Screenshot%202026-10-19%20at%203.01.52%C3%A2%C2%80%C2%AFpm.png" alt="Riviera Irish Burgos Portfolio Preview" width="100%">
 </div>
 
-
 ---
 
 ### 👋 Hello, I'm Riviera Irish Burgos!
